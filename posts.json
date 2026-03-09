@@ -1,0 +1,12 @@
+[
+  {
+    "slug": "card-one",
+    "title": "Card One",
+    "text": "Some inspiring text or feature here."
+  },
+  {
+    "slug": "card-two",
+    "title": "Card Two",
+    "text": "Another beautiful piece of content."
+  }
+]

@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Blog Post</title>
+
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Georgia', serif;
+  background: radial-gradient(circle at top, #1b1b2f, #0b0b14);
+  color: #f5f3ef;
+}
+
+.container {
+  max-width: 800px;
+  margin: 100px auto 50px auto;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(255,220,180,0.1);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+p {
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+#likeBtn {
+  position: relative;
+  margin-top: 30px;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 40px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  background: linear-gradient(135deg, #ff9eb5, #ffcaa6);
+  color: #1b1b2f;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(255, 120, 170, 0.4);
+}
+
+#likeBtn:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 0 35px rgba(255, 120, 170, 0.8);
+}
+
+#likeBtn.liked {
+  background: linear-gradient(135deg, #ff3e6c, #ff8eb8);
+  color: white;
+}
+
+.comments-section {
+  margin-top: 50px;
+}
+
+.comments-section textarea {
+  width: 100%;
+  height: 80px;
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  resize: none;
+}
+
+.comments-section button {
+  margin-top: 10px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #ffcaa6;
+  font-weight: bold;
+}
+
+.comment {
+  margin-top: 15px;
+  padding: 10px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 8px;
+}
+
+.back-btn {
+  display: inline-block;
+  margin-top: 40px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: #ffcaa6;
+  color: #1b1b2f;
+  font-weight: bold;
+  text-decoration: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1 id="postTitle">Loading…</h1>
+<p id="postText"></p>
+
+<button id="likeBtn">❤️ Like</button>
+<span id="likeCount">0</span> likes
+
+<div class="comments-section">
+
+<h3>Comments</h3>
+
+<div id="commentsList"></div>
+
+<textarea id="commentInput" placeholder="Write something thoughtful..."></textarea>
+
+<button id="commentBtn">Post Comment</button>
+
+</div>
+
+<a href="index.html" class="back-btn">← Back to Blog</a>
+
+</div>
+
+<script>
+
+const urlParams = new URLSearchParams(window.location.search);
+const postId = parseInt(urlParams.get('id'));
+
+let posts = JSON.parse(localStorage.getItem("blogPosts"));
+
+if(!posts){
+
+fetch('posts.json')
+.then(res => res.json())
+.then(json => {
+
+posts = json;
+loadPost(posts);
+
+});
+
+}
+
+else{
+
+loadPost(posts);
+
+}
+
+function loadPost(posts){
+
+const post = posts[postId];
+
+const titleElem = document.getElementById("postTitle");
+const textElem = document.getElementById("postText");
+
+if(!post){
+
+titleElem.textContent = "Post not found 🌿";
+textElem.textContent = "This post does not exist.";
+return;
+
+}
+
+titleElem.textContent = post.title;
+textElem.textContent = post.text;
+
+const likeBtn = document.getElementById("likeBtn");
+const likeCountElem = document.getElementById("likeCount");
+
+let likesData = JSON.parse(localStorage.getItem("likes")) || {};
+let userLikes = JSON.parse(localStorage.getItem("userLikes")) || {};
+
+likesData[postId] = likesData[postId] || 0;
+
+likeCountElem.textContent = likesData[postId];
+
+if(userLikes[postId]){
+
+likeBtn.classList.add("liked");
+
+}
+
+likeBtn.addEventListener("click", () => {
+
+if(userLikes[postId]) return;
+
+likesData[postId]++;
+userLikes[postId] = true;
+
+localStorage.setItem("likes", JSON.stringify(likesData));
+localStorage.setItem("userLikes", JSON.stringify(userLikes));
+
+likeCountElem.textContent = likesData[postId];
+
+likeBtn.classList.add("liked");
+
+});
+
+const commentInput = document.getElementById("commentInput");
+const commentBtn = document.getElementById("commentBtn");
+const commentsList = document.getElementById("commentsList");
+
+let commentsData = JSON.parse(localStorage.getItem("comments")) || {};
+
+commentsData[postId] = commentsData[postId] || [];
+
+function renderComments(){
+
+commentsList.innerHTML = "";
+
+commentsData[postId].forEach((comment,index)=>{
+
+const div = document.createElement("div");
+div.classList.add("comment");
+
+div.textContent = comment;
+
+commentsList.appendChild(div);
+
+});
+
+}
+
+renderComments();
+
+commentBtn.addEventListener("click",()=>{
+
+const newComment = commentInput.value.trim();
+
+if(newComment !== ""){
+
+commentsData[postId].push(newComment);
+
+localStorage.setItem("comments", JSON.stringify(commentsData));
+
+commentInput.value = "";
+
+renderComments();
+
+}
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
+

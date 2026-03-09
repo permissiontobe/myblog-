@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Permission to Be</title>
+<style>
+/* ---------------- BODY ---------------- */
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+  overflow-x: hidden;
+  background: radial-gradient(circle at top, #1b1b2f, #0b0b14);
+  font-family: 'Georgia', serif;
+  position: relative;
+}
+
+/* ---------------- HERO ---------------- */
+#hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#effects {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+h1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  letter-spacing: 2px;
+  text-shadow: 0 0 20px rgba(255, 220, 180, 0.4);
+  color: #f5f3ef;
+  z-index: 100;
+}
+
+p.hero-sub {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #f5f3ef;
+  opacity: 0.8;
+  z-index: 100;
+}
+
+/* ---------------- MOUSE GLOW ---------------- */
+#mouseGlow {
+  position: fixed;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(255,255,200,0.35), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 200;
+}
+
+/* ---------------- CANDLES ---------------- */
+.candle {
+  position: absolute;
+  animation: float ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 15px rgba(255, 200, 150, 0.6));
+}
+
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+/* ---------------- STARS ---------------- */
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: twinkle 3s infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.2; }
+  50% { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+
+/* ---------------- CLOUDS ---------------- */
+.cloud {
+  position: absolute;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+@keyframes drift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(150vw); }
+}
+
+/* ---------------- AUTUMN LEAVES ---------------- */
+.leaf {
+  position: absolute;
+  top: -80px;
+  opacity: 0.9;
+  animation: leafFall linear infinite;
+}
+
+@keyframes leafFall {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(120vh) rotate(360deg); }
+}
+
+/* ---------------- TOP MENU ---------------- */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  z-index: 300;
+  background: rgba(0,0,0,0.25);
+}
+
+.sidebar a {
+  display: inline-block;
+  text-decoration: none;
+  color: #f5f3ef;
+  opacity: 0.9;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.sidebar a:hover { opacity: 1; }
+
+/* ---------------- CARDS ---------------- */
+.cards {
+  width: 90%;
+  max-width: 1000px;
+  margin: 140px auto 50px auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 50px;
+  justify-items: center;
+  position: relative;
+  z-index: 101;
+}
+
+.card {
+  background: rgba(255,255,255,0.05);
+  padding: 25px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(255,220,180,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 0 30px rgba(255,220,180,0.4);
+  cursor: pointer;
+}
+
+/* ---------------- ABOUT US ---------------- */
+.about {
+  width: 70%;
+  max-width: 900px;
+  margin: 50px auto 50px auto;
+  background: rgba(180, 220, 255, 0.25);
+  padding: 30px;
+  border-radius: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+  position: relative;
+  z-index: 10;
+}
+
+.about img {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.about p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ---------------- NEWSLETTER ---------------- */
+#newsletter {
+  width: 100%;
+  margin: 80px 0;
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+}
+
+#newsletter input {
+  width: 320px;
+  max-width: 90%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: none;
+  font-size: 1rem;
+  outline: none;
+}
+
+#newsletter button {
+  padding: 14px 18px;
+  margin-left: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #ffcaa6;
+  color: #1b1b2f;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ---------------- CONTACT MODAL ---------------- */
+#contactModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  background: rgba(20, 40, 90, 0.5);
+  border-radius: 20px;
+  padding: 30px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  z-index: 500;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 20px rgba(255, 255, 220, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#contactModal .closeBtn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #fff;
+}
+
+#contactModal h3 {
+  color: #fff;
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+#contactModal .socials {
+  display: flex;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+#contactModal .socials img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  transition: transform 0.3s, filter 0.3s;
+}
+
+#contactModal .socials img:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 15px rgba(255, 220, 180, 0.7));
+}
+/* ---------------- MISSION MODAL ---------------- */
+#missionModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  max-width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: rgba(20, 40, 90, 0.85);
+  border-radius: 20px;
+  padding: 40px;
+  display: none;
+  z-index: 500;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 30px rgba(255, 255, 220, 0.2);
+  color: #f5f3ef;
+}
+
+#missionModal h3 {
+  margin-top: 0;
+  text-align: center;
+}
+
+#missionModal p {
+  line-height: 1.8;
+  margin-bottom: 18px;
+}
+
+.closeMission {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+/* ---------------- ADMIN DESK ---------------- */
+.admin-desk {
+  position: fixed;
+  top: 60px;
+  right: 20px;
+  background: rgba(30,40,80,0.9);
+  padding: 20px;
+  border-radius: 16px;
+  z-index: 600;
+  width: 320px;
+  display: none;
+}
+
+.admin-desk h3 {
+  color: #ffcaa6;
+  margin-bottom: 10px;
+}
+
+.admin-desk input, .admin-desk textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  border: none;
+}
+
+.admin-desk textarea {
+  height: 100px;
+}
+
+.admin-desk button {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #ffcaa6;
+  color: #1b1b2f;
+  font-weight: bold;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- Top Menu -->
+<div class="sidebar">
+  <a href="#" id="missionBtn">Our Mission</a>
+  <a href="#blog">Blog</a>
+  <a href="https://payhip.com/SoulAlchemyy" target="_blank">Store</a>
+  <a href="#" id="contactBtn">Contact Us</a>
+</div>
+
+<!-- Hero -->
+<section id="hero">
+  <div id="effects"></div>
+  <h1>Permission to Be</h1>
+  <p class="hero-sub">A gentle space to exist, grow, and be.</p>
+  <div id="mouseGlow"></div>
+</section>
+
+<!-- ADMIN DESK -->
+<div class="admin-desk">
+  <h3>Admin Desk 🖋</h3>
+  <input type="text" id="adminTitle" placeholder="Post title…">
+  <textarea id="adminText" placeholder="Write post content…"></textarea>
+  <button id="publishAdmin">Publish Post</button>
+</div>
+<!-- Blog Section -->
+<section id="blog">
+  <div class="cards">
+    <!-- Cards will be loaded here dynamically -->
+  </div>
+</section>
+
+<!-- About Us -->
+<section id="mission" class="about">
+  <img src="images/us.jpg" alt="Fyth & Adam">
+  <p>Hello, we are Fyth and Adam, writers and creators, exploring the spaces where emotions, intuition, creativity and our hearts meet. Everything here is crafted to guide you back to yourself, whether through a letter, a journal, a blog, or a spark of inspiration.</p>
+</section>
+
+<!-- Newsletter -->
+<div id="newsletter">
+  <input type="email" id="newsletterEmail" placeholder="Enter your email">
+  <button id="subscribeBtn">Subscribe</button>
+</div>
+
+<!-- Contact Modal -->
+<div id="contactModal">
+  <span class="closeBtn">×</span>
+  <h3>Contact Us</h3>
+  <div class="socials">
+    <a href="mailto:permissiontobe3@gmail.com"><img src="images/email.svg" alt="Email"></a>
+    <a href="https://www.pinterest.com/Fyth33/" target="_blank"><img src="images/Pinterest.svg" alt="Pinterest"></a>
+  </div>
+ </div>
+<!-- Mission Modal -->
+<div id="missionModal">
+  <span class="closeMission">×</span>
+  <h3>Our Mission 🌿</h3>
+  <div class="missionContent">
+
+    <p>Hello, we are Fyth and Adam, the creators of Permission to Be. This place was born out of quiet rebellion. A rebellion against performance and labels. Against the exhausting need to be healed, enlightened, good, impressive, in order to be loved, to arrive or achieve your goals.</p>
+
+    <p>Here, right and wrong loosen their authority. Where no version of you needs to be edited for approval. Where your doubt is allowed, your ambition is allowed, your softness is allowed, your rage is allowed, your contradictions are allowed, your fear is allowed, and your procrastination is allowed. Even the parts of you that feel like the villain in someone else’s story — especially those. Here, in fact, all these labels drop.</p>
+
+    <p>Permission to Be is about sitting with yourself long enough to hear your own voice beneath expectations, beneath fear, beneath inherited scripts.</p>
+
+    <p>Bring all of you — the polished and the messy. The spiritual and the skeptical. The gentle and the wild. The lost and the seeker. No performance is required, only honesty.</p>
+
+    <p>We created this space because we know what it feels like to believe you have to be someone for love to be earned, for success to be achieved, for worth to be earned.</p>
+
+    <p>So this blog is our decision to unlearn that. It is where we practice existence as is. It is where we bring the whole of us and embrace those parts. It is where we allow ourselves to question, to evolve, to contradict ourselves, to take up space and most of all, to be.</p>
+
+    <p>If you are learning to do the same, you are not walking alone.</p>
+
+    <p><strong>This is your permission. And ours. To be.</strong></p>
+
+    <p>— Fyth & Adam</p>
+
+    </div>
+</div>
+
+<script>
+const effects = document.getElementById("effects");
+
+/* -------- CANDLES -------- */
+window.addEventListener("load", () => {
+  const cols = 6;
+  const rows = 4;
+  const zoneW = window.innerWidth / cols;
+  const zoneH = window.innerHeight / rows;
+
+  for (let i = 0; i < cols*rows; i++) {
+    const c = document.createElement("img");
+    c.src = "images/candle.svg";
+    c.className = "candle";
+    const size = 35 + Math.random() * 20;
+    c.style.width = size + "px";
+
+    const row = Math.floor(i / cols);
+    const col = i % cols;
+
+    c.style.left = col * zoneW + Math.random()*(zoneW-size) + "px";
+    c.style.top = row * zoneH + Math.random()*(zoneH-size) + "px";
+    c.style.animationDuration = 4 + Math.random()*4 + "s";
+
+    effects.appendChild(c);
+  }
+});
+
+/* -------- CANDLE FLICKER -------- */
+function flickerCandles(){
+  document.querySelectorAll(".candle").forEach(c=>{
+    const scale=0.95+Math.random()*0.1;
+    const brightness=0.8+Math.random()*0.4;
+    c.style.transform=`scale(${scale})`;
+    c.style.filter=`drop-shadow(0 0 15px rgba(255,200,150,${brightness}))`;
+  });
+}
+setInterval(flickerCandles,150);
+
+/* -------- STARS -------- */
+for(let i=0;i<100;i++){
+  const star=document.createElement("div");
+  star.className="star";
+  star.style.top=Math.random()*window.innerHeight+"px";
+  star.style.left=Math.random()*window.innerWidth+"px";
+  star.style.animationDuration=(2+Math.random()*3)+"s";
+  effects.appendChild(star);
+}
+
+/* -------- CLOUDS -------- */
+const cloudImage="images/cloud1.svg";
+for(let i=0;i<7;i++){
+  const cloud=document.createElement("img");
+  cloud.src=cloudImage;
+  cloud.className="cloud";
+  cloud.style.top=(Math.random()*window.innerHeight*0.5)+"px";
+  cloud.style.left=(-200-Math.random()*200)+"px";
+  const size=180+Math.random()*120;
+  cloud.style.width=size+"px";
+  cloud.style.height="auto";
+  cloud.style.animation=`drift ${30+Math.random()*30}s linear infinite`;
+  effects.appendChild(cloud);
+}
+
+/* -------- AUTUMN LEAVES -------- */
+const leafImages=["images/leaf1.svg","images/leaf2.svg"];
+for(let i=0;i<5;i++){
+  const leaf=document.createElement("img");
+  leaf.src=leafImages[Math.floor(Math.random()*leafImages.length)];
+  leaf.className="leaf";
+  leaf.style.left=Math.random()*100+"%";
+  leaf.style.width=30+Math.random()*25+"px";
+  leaf.style.animationDuration=12+Math.random()*10+"s";
+  leaf.style.animationDelay=Math.random()*5+"s";
+  effects.appendChild(leaf);
+}
+
+/* -------- MOUSE GLOW -------- */
+const mouseGlow=document.getElementById("mouseGlow");
+document.addEventListener("mousemove",e=>{
+  mouseGlow.style.left=e.clientX+"px";
+  mouseGlow.style.top=e.clientY+"px";
+});
+
+/* -------- SOUNDS -------- */
+const entranceSound=new Audio("audio/entrance.mp3");
+let playedEntrance=false;
+document.addEventListener("click",()=>{
+  if(!playedEntrance){entranceSound.play().catch(()=>{});playedEntrance=true;}
+});
+const clickSound=new Audio("audio/click.mp3");
+document.addEventListener("click",()=>{clickSound.currentTime=0;clickSound.play();});
+
+/* -------- CONTACT MODAL -------- */
+const contactBtn=document.getElementById("contactBtn");
+const contactModal=document.getElementById("contactModal");
+const closeBtn=document.querySelector(".closeBtn");
+
+contactBtn.addEventListener("click",()=>{ contactModal.style.display="flex"; });
+closeBtn.addEventListener("click",()=>{ contactModal.style.display="none"; });
+/* -------- MISSION MODAL -------- */
+const missionBtn = document.getElementById("missionBtn");
+const missionModal = document.getElementById("missionModal");
+const closeMission = document.querySelector(".closeMission");
+
+missionBtn.addEventListener("click", () => {
+  missionModal.style.display = "block";
+});
+
+closeMission.addEventListener("click", () => {
+  missionModal.style.display = "none";
+});
+
+/* -------- NEWSLETTER BUTTON -------- */
+const subscribeBtn = document.getElementById("subscribeBtn");
+const newsletterEmail = document.getElementById("newsletterEmail");
+
+subscribeBtn.addEventListener("click", () => {
+  const email = newsletterEmail.value.trim();
+  if(email){
+    window.location.href = `mailto:permissiontobe3@gmail.com?subject=Newsletter Subscription&body=Please add me to the newsletter: ${email}`;
+  } else { alert("Please enter your email before subscribing!"); }
+});
+
+/* -------- ADMIN DESK FUNCTIONALITY -------- */
+const adminDesk = document.querySelector(".admin-desk");
+const adminTitle = document.getElementById("adminTitle");
+const adminText = document.getElementById("adminText");
+const publishAdmin = document.getElementById("publishAdmin");
+
+function renderPosts() {
+  const cardsContainer = document.querySelector(".cards");
+  cardsContainer.innerHTML = "";
+  posts.forEach((post, index) => { // <-- added index
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `<h3>${post.title}</h3><p>${post.text}</p>`;
+    
+    // Make card clickable
+    card.style.cursor = "pointer";
+    card.addEventListener("click", () => {
+  window.location.href = `posts.html?id=${index}`; // send index as id
+    });
+
+    cardsContainer.appendChild(card);
+  });
+}
+
+// Load from localStorage or fallback to posts.json
+let posts = JSON.parse(localStorage.getItem("blogPosts")) || [];
+if(posts.length === 0){
+  fetch('posts.json')
+    .then(res => res.json())
+    .then(jsonPosts => { posts = jsonPosts; renderPosts(); })
+    .catch(err => console.error("Failed to load posts:", err));
+} else { renderPosts(); }
+
+// Publish post
+publishAdmin.addEventListener("click", ()=>{
+  const title = adminTitle.value.trim();
+  const text = adminText.value.trim();
+  if(!title || !text) return alert("Please fill both fields 🌿");
+
+  posts.unshift({title, text});
+  localStorage.setItem("blogPosts", JSON.stringify(posts));
+  renderPosts();
+
+  adminTitle.value = "";
+  adminText.value = "";
+});
+
+// Toggle admin desk: Ctrl + Shift + D
+document.addEventListener("keydown", e=>{
+  if(e.ctrlKey && e.shiftKey && e.key.toLowerCase()==='d'){
+    adminDesk.style.display = adminDesk.style.display==="none" ? "block" : "none";
+  }
+});
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
