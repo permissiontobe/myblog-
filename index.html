@@ -388,6 +388,7 @@ p.hero-sub {
 
 <!-- ADMIN DESK -->
 <div class="admin-desk">
+  <span id="closeAdmin" style="position:absolute; top:10px; right:15px; font-size:1.5rem; cursor:pointer; color:#ffcaa6;">×</span>
   <h3>Admin Desk 🖋</h3>
   <input type="text" id="adminTitle" placeholder="Post title…">
   <textarea id="adminText" placeholder="Write post content…"></textarea>
@@ -625,6 +626,12 @@ document.addEventListener("keydown", function(e) {
     document.querySelector(".admin-desk").style.display = "block";
   }
 });
+
+const closeAdmin = document.getElementById("closeAdmin");
+
+closeAdmin.addEventListener("click", () => {
+  adminDesk.style.display = "none"
+
 </script>
 </body>
 </html>

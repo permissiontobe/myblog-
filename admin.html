@@ -21,6 +21,7 @@ button:hover { transform: scale(1.03); }
 <body>
 
 <div class="container">
+  <span id="closeDesk" style="position:absolute; top:20px; right:20px; font-size:1.5rem; cursor:pointer;">×</span>
   <h1>🕯 Permission to Be — Writing Desk</h1>
   <input type="text" id="title" placeholder="Post title…">
   <textarea id="content" placeholder="Write from the heart…"></textarea>
@@ -71,6 +72,12 @@ function deletePost(id) {
   renderPosts();
   window.dispatchEvent(new Event("postsUpdated")); // update homepage
 }
+const closeDeskBtn = document.getElementById("closeDesk");
+const container = document.querySelector(".container");
+
+closeDeskBtn.addEventListener("click", () => {
+  container.style.display = "none"; // hides the whole admin desk
+});
 </script>
 
 </body>
