@@ -329,21 +329,19 @@ p.hero-sub {
 }
 
 /* ---------------- ADMIN DESK ---------------- */
-.admin-desk {
-  position: fixed;
-  top: 60px;
-  right: 20px;
-  background: rgba(30,40,80,0.9);
-  padding: 20px;
-  border-radius: 16px;
-  z-index: 600;
-  width: 320px;
-  display: none;
-}
-
-.admin-desk h3 {
-  color: #ffcaa6;
-  margin-bottom: 10px;
+.admin-desk { 
+  position: fixed; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+  width: 90%;           /* almost full width */
+  height: 90%;          /* almost full height */
+  background: rgba(30,40,80,0.95); 
+  padding: 30px; 
+  border-radius: 20px; 
+  z-index: 600; 
+  display: none; 
+  overflow-y: auto;     /* scroll if content is tall */
 }
 
 .admin-desk input, .admin-desk textarea {
@@ -435,7 +433,7 @@ p.hero-sub {
 
     <p>Permission to Be is about sitting with yourself long enough to hear your own voice beneath expectations, beneath fear, beneath inherited scripts.</p>
 
-    <p>Bring all of you — the polished and the messy. The spiritual and the skeptical. The gentle and the wild. The lost and the seeker. No performance is required, only honesty.</p>
+    <p>Bring all of you, the polished and the messy. The spiritual and the skeptical. The gentle and the wild. The lost and the seeker. No performance is required, only honesty.</p>
 
     <p>We created this space because we know what it feels like to believe you have to be someone for love to be earned, for success to be achieved, for worth to be earned.</p>
 
@@ -622,9 +620,9 @@ publishAdmin.addEventListener("click", ()=>{
 });
 
 // Toggle admin desk: Ctrl + Shift + A
-document.addEventListener("keydown", e=>{
-  if(e.ctrlKey && e.shiftKey && e.key.toLowerCase()==='a'){
-    adminDesk.style.display = adminDesk.style.display==="none" ? "block" : "none";
+document.addEventListener("keydown", function(e) {
+  if(e.ctrlKey && e.key === "m") {
+    document.querySelector(".admin-desk").style.display = "block";
   }
 });
 </script>
