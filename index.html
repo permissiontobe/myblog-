@@ -585,7 +585,7 @@ function renderPosts() {
   posts.forEach((post, index) => { // <-- added index
     const card = document.createElement("div");
     card.className = "card";
-    card.innerHTML = `<h3>${post.title}</h3><p>${post.text}</p>`;
+card.innerHTML = `<h3>${post.title}</h3>`;
     
     // Make card clickable
     card.style.cursor = "pointer";
