@@ -328,43 +328,57 @@ p.hero-sub {
   cursor: pointer;
 }
 
-/* ---------------- ADMIN DESK ---------------- */
-.admin-desk { 
-  position: fixed; 
-  top: 50%; 
-  left: 50%; 
-  transform: translate(-50%, -50%); 
-  width: 90%;           /* almost full width */
-  height: 90%;          /* almost full height */
-  background: rgba(30,40,80,0.95); 
-  padding: 30px; 
-  border-radius: 20px; 
-  z-index: 600; 
-  display: none; 
-  overflow-y: auto;     /* scroll if content is tall */
-}
+/* ---------------- MOBILE ---------------- */
 
-.admin-desk input, .admin-desk textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-  border: none;
-}
+@media (max-width: 768px) {
 
-.admin-desk textarea {
-  height: 100px;
-}
+  h1 {
+    font-size: 2rem;
+    text-align: center;
+    width: 90%;
+  }
 
-.admin-desk button {
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  background: #ffcaa6;
-  color: #1b1b2f;
-  font-weight: bold;
-  cursor: pointer;
+  .hero-sub {
+    width: 90%;
+    text-align: center;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    width: 92%;
+  }
+
+  .about {
+    flex-direction: column;
+    width: 90%;
+    text-align: center;
+    align-items: center;
+  }
+
+  .sidebar {
+    gap: 18px;
+    flex-wrap: wrap;
+    padding: 15px;
+  }
+
+  #newsletter {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  #newsletter button {
+    margin-left: 0;
+  }
+
+  #contactModal,
+  #missionModal {
+    width: 90%;
+    padding: 25px;
+  }
+
+
 }
 </style>
 </head>
@@ -386,14 +400,7 @@ p.hero-sub {
   <div id="mouseGlow"></div>
 </section>
 
-<!-- ADMIN DESK -->
-<div class="admin-desk">
-  <span id="closeAdmin" style="position:absolute; top:10px; right:15px; font-size:1.5rem; cursor:pointer; color:#ffcaa6;">×</span>
-  <h3>Admin Desk 🖋</h3>
-  <input type="text" id="adminTitle" placeholder="Post title…">
-  <textarea id="adminText" placeholder="Write post content…"></textarea>
-  <button id="publishAdmin">Publish Post</button>
-</div>
+
 <!-- Blog Section -->
 <section id="blog">
   <div class="cards">
@@ -573,66 +580,72 @@ subscribeBtn.addEventListener("click", () => {
   } else { alert("Please enter your email before subscribing!"); }
 });
 
-/* -------- ADMIN DESK FUNCTIONALITY -------- */
-const adminDesk = document.querySelector(".admin-desk");
-const adminTitle = document.getElementById("adminTitle");
-const adminText = document.getElementById("adminText");
-const publishAdmin = document.getElementById("publishAdmin");
+/* -------- (ALL YOUR ANIMATIONS & UI STAY THE SAME ABOVE) -------- */
+
+/* -------- BLOG POSTS -------- */
+
+let posts = JSON.parse(localStorage.getItem("blogPosts")) || [];
+
+function stripHTML(html) {
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  return div.textContent || div.innerText || "";
+}
 
 function renderPosts() {
   const cardsContainer = document.querySelector(".cards");
+
   cardsContainer.innerHTML = "";
-  posts.forEach((post, index) => { // <-- added index
+
+posts.forEach((post) => {
+
+  const preview = stripHTML(post.content || post.text || "").slice(0, 120);
+
     const card = document.createElement("div");
     card.className = "card";
-card.innerHTML = `<h3>${post.title}</h3>`;
-    
-    // Make card clickable
-    card.style.cursor = "pointer";
+
+    card.innerHTML = `
+      <h3>${post.title}</h3>
+      <p>${preview}...</p>
+    `;
+
     card.addEventListener("click", () => {
-  window.location.href = `posts.html?id=${index}`; // send index as id
+    window.location.href = `posts.html?id=${post.id}`;
     });
 
     cardsContainer.appendChild(card);
   });
 }
 
-// Load from localStorage or fallback to posts.json
-let posts = JSON.parse(localStorage.getItem("blogPosts")) || [];
+/* -------- LOAD POSTS -------- */
+
 if(posts.length === 0){
-  fetch('posts.json')
-    .then(res => res.json())
-    .then(jsonPosts => { posts = jsonPosts; renderPosts(); })
-    .catch(err => console.error("Failed to load posts:", err));
-} else { renderPosts(); }
+fetch("posts.json")
+  .then(res => res.json())
+  .then(data => {
+    posts = data;
+    renderPosts();
+  })
+  .catch(err => {
+    console.error("Failed to load posts:", err);
+  });
+} else {
 
-// Publish post
-publishAdmin.addEventListener("click", ()=>{
-  const title = adminTitle.value.trim();
-  const text = adminText.value.trim();
-  if(!title || !text) return alert("Please fill both fields 🌿");
-
-  posts.unshift({title, text});
-  localStorage.setItem("blogPosts", JSON.stringify(posts));
   renderPosts();
 
-  adminTitle.value = "";
-  adminText.value = "";
-});
+}
 
-// Toggle admin desk: Ctrl + Shift + A
-document.addEventListener("keydown", function(e) {
-  if(e.ctrlKey && e.key === "m") {
-    document.querySelector(".admin-desk").style.display = "block";
+/* -------- CTRL + M -------- */
+
+document.addEventListener("keydown", function(e){
+
+  if(e.ctrlKey && e.key.toLowerCase() === "m"){
+
+    window.location.href = "admin.html";
+
   }
+
 });
-
-const closeAdmin = document.getElementById("closeAdmin");
-
-closeAdmin.addEventListener("click", () => {
-  adminDesk.style.display = "none";
-});
-
 </script>
 </body>
 </html>

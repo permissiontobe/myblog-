@@ -3,82 +3,252 @@
 <head>
 <meta charset="UTF-8">
 <title>Admin Desk – Permission to Be</title>
+
 <style>
-body { margin:0; padding:0; font-family:'Georgia', serif; background: radial-gradient(circle at top, #1b1b2f, #0b0b14); color:#f5f3ef; }
-.container { max-width:900px; margin:60px auto; background:rgba(30,40,80,0.45); padding:40px; border-radius:20px; backdrop-filter:blur(10px); box-shadow:0 0 40px rgba(255,220,180,0.08);}
-h1 { text-align:center; margin-bottom:30px; letter-spacing:1px; }
-input, textarea { width:100%; padding:14px 16px; margin-bottom:20px; border-radius:12px; border:none; outline:none; font-size:1rem; font-family:'Georgia', serif; }
-textarea { height:240px; resize:vertical; }
-button { padding:14px 26px; border-radius:12px; border:none; background:#ffcaa6; color:#1b1b2f; font-weight:bold; font-size:1rem; cursor:pointer; transition: transform 0.2s; }
-button:hover { transform: scale(1.03); }
-.posts { margin-top:50px; }
-.post-card { background: rgba(255,255,255,0.06); padding:20px; border-radius:14px; margin-bottom:20px; }
-.post-card h3 { margin:0 0 10px 0; }
-.post-card p { opacity:0.85; line-height:1.6; }
-.delete-btn { background:transparent; color:#ffcaa6; border:none; cursor:pointer; font-size:0.9rem; }
+body {
+  margin:0;
+  padding:0;
+  font-family:'Georgia', serif;
+  background: radial-gradient(circle at top, #1b1b2f, #0b0b14);
+  color:#f5f3ef;
+}
+
+.container {
+  max-width:900px;
+  margin:60px auto;
+  background:rgba(30,40,80,0.45);
+  padding:40px;
+  border-radius:20px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 0 40px rgba(255,220,180,0.08);
+  position: relative;
+}
+
+/* Placeholder for contenteditable */
+#content:empty:before {
+  content: "Write from the heart…";
+  color: gray;
+}
+
+/* Toolbar */
+.toolbar {
+  margin-bottom:10px;
+}
+
+.toolbar button {
+  padding:8px 12px;
+  margin-right:6px;
+  border-radius:8px;
+  border:none;
+  background:#ffcaa6;
+  cursor:pointer;
+  font-size:0.9rem;
+}
+
+h1 {
+  text-align:center;
+  margin-bottom:30px;
+}
+
+input {
+  width:100%;
+  padding:14px;
+  margin-bottom:20px;
+  border-radius:12px;
+  border:none;
+}
+
+/* Editor */
+#content {
+  min-height:240px;
+  padding:14px;
+  border-radius:12px;
+  background:white;
+  color:#1b1b2f;
+  outline:none;
+  margin-bottom:20px;
+}
+
+/* Button */
+button.publish {
+  padding:14px 26px;
+  border-radius:12px;
+  border:none;
+  background:#ffcaa6;
+  color:#1b1b2f;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* Posts preview */
+.posts {
+  margin-top:50px;
+}
+
+.post-card {
+  background: rgba(255,255,255,0.06);
+  padding:20px;
+  border-radius:14px;
+  margin-bottom:20px;
+}
+
+.delete-btn {
+  background:transparent;
+  color:#ffcaa6;
+  border:none;
+  cursor:pointer;
+  margin-left:10px;
+}
+
+.close-btn {
+  position:absolute;
+  top:20px;
+  right:20px;
+  font-size:1.5rem;
+  cursor:pointer;
+}
+
 </style>
 </head>
+
 <body>
 
 <div class="container">
-  <span id="closeDesk" style="position:absolute; top:20px; right:20px; font-size:1.5rem; cursor:pointer;">×</span>
+  <span id="closeDesk" class="close-btn">×</span>
+
   <h1>🕯 Permission to Be — Writing Desk</h1>
+
   <input type="text" id="title" placeholder="Post title…">
-  <textarea id="content" placeholder="Write from the heart…"></textarea>
-  <button onclick="publishPost()">Publish</button>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <button onclick="format('bold')">Bold</button>
+    <button onclick="format('italic')">Italic</button>
+    <button onclick="format('h2')">Title</button>
+<button onclick="format('underline')">Underline</button>
+<button onclick="format('p')">Paragraph</button>
+  </div>
+
+  <!-- EDITOR -->
+  <div id="content" contenteditable="true"></div>
+
+  <button id="publishBtn" class="publish">Publish</button>
+
   <div class="posts" id="posts"></div>
 </div>
 
 <script>
 const postsContainer = document.getElementById("posts");
+const publishBtn = document.getElementById("publishBtn");
+const contentDiv = document.getElementById("content");
+
 let posts = JSON.parse(localStorage.getItem("blogPosts")) || [];
-renderPosts();
 
-function publishPost() {
-  const title = document.getElementById("title").value.trim();
-  const content = document.getElementById("content").value.trim();
-  if (!title || !content) { alert("Please write both a title and content 🌿"); return; }
+/* -------- TEXT FORMATTING -------- */
+function format(type) {
 
-  const post = { id: Date.now(), title, content };
-  posts.unshift(post);
-  localStorage.setItem("blogPosts", JSON.stringify(posts));
+  if(type === "bold"){
+    document.execCommand("bold");
+  }
 
-  document.getElementById("title").value = "";
-  document.getElementById("content").value = "";
+  else if(type === "italic"){
+    document.execCommand("italic");
+  }
 
-  renderPosts();
+  else if(type === "underline"){
+    document.execCommand("underline");
+  }
 
-  // Notify homepage to update cards instantly
-  window.dispatchEvent(new Event("postsUpdated"));
+  else if(type === "h2"){
+    document.execCommand("formatBlock", false, "h2");
+  }
+
+  else if(type === "p"){
+    document.execCommand("formatBlock", false, "p");
+  }
+
 }
 
+/* -------- RENDER POSTS -------- */
 function renderPosts() {
   postsContainer.innerHTML = "<h2>Your posts</h2>";
+
+  if(posts.length === 0){
+    postsContainer.innerHTML += "<p>No posts yet 🌿</p>";
+    return;
+  }
+
   posts.forEach(post => {
     const div = document.createElement("div");
     div.className = "post-card";
+
     div.innerHTML = `
       <h3>${post.title}</h3>
-      <p>${post.content}</p>
+      <div>${post.content}</div>
+      <button onclick="editPost(${post.id})">Edit</button>
       <button class="delete-btn" onclick="deletePost(${post.id})">Delete</button>
     `;
+
     postsContainer.appendChild(div);
   });
 }
 
+/* -------- PUBLISH -------- */
+publishBtn.addEventListener("click", () => {
+  const title = document.getElementById("title").value.trim();
+  const content = contentDiv.innerHTML.trim();
+
+  if (!title || !content) {
+    alert("Please write both a title and content 🌿");
+    return;
+  }
+
+  const newPost = {
+    id: Date.now(),
+    title,
+    content
+  };
+
+  posts.unshift(newPost);
+  localStorage.setItem("blogPosts", JSON.stringify(posts));
+
+  document.getElementById("title").value = "";
+  contentDiv.innerHTML = "";
+
+  renderPosts();
+});
+
+/* -------- DELETE -------- */
 function deletePost(id) {
   posts = posts.filter(p => p.id !== id);
   localStorage.setItem("blogPosts", JSON.stringify(posts));
   renderPosts();
-  window.dispatchEvent(new Event("postsUpdated")); // update homepage
 }
-const closeDeskBtn = document.getElementById("closeDesk");
-const container = document.querySelector(".container");
 
-closeDeskBtn.addEventListener("click", () => {
-  container.style.display = "none"; // hides the whole admin desk
+/* -------- EDIT -------- */
+function editPost(id) {
+  const post = posts.find(p => p.id === id);
+
+  if (!post) return;
+
+  document.getElementById("title").value = post.title;
+  contentDiv.innerHTML = post.content;
+
+  deletePost(id); // remove old, will replace on publish
+}
+
+/* -------- CLOSE -------- */
+document.getElementById("closeDesk").addEventListener("click", () => {
+  window.location.href = "index.html";
 });
+
+/* -------- INIT -------- */
+renderPosts();
+
 </script>
 
 </body>
 </html>
+
+
+
