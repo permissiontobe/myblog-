@@ -10,14 +10,16 @@ html {
   scroll-behavior: smooth;
 }
 body {
-  margin: 0;
+ margin: 0;
   padding: 0;
   width: 100%;
   height: 100vh;
   overflow-x: hidden;
- background: radial-gradient(circle at top, #24152e, #0b0b14);
+background: radial-gradient(circle at top, #24152e, #0b0b14);
+
   font-family: 'Georgia', serif;
   position: relative;
+
 }
 
 /* ---------------- HERO ---------------- */
@@ -169,6 +171,7 @@ p.hero-sub {
   justify-items: center;
   position: relative;
   z-index: 101;
+
 }
 
 .card {
@@ -180,6 +183,9 @@ p.hero-sub {
   text-align: center;
   box-shadow: 0 0 20px rgba(255,220,180,0.1);
   transition: transform 0.3s, box-shadow 0.3s;
+overflow-wrap: break-word;
+word-break: break-word;
+box-sizing: border-box;
 }
 
 .card:hover {
@@ -613,7 +619,6 @@ posts.forEach((post) => {
 
     card.innerHTML = `
       <h3>${post.title}</h3>
-      <p>${preview}...</p>
     `;
 
     card.addEventListener("click", () => {

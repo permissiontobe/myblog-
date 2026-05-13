@@ -9,27 +9,60 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Georgia', serif;
+
   background: radial-gradient(circle at top, #1b1b2f, #0b0b14);
+
   color: #f5f3ef;
 }
 
 .container {
-  max-width: 800px;
+  max-width: 900px;
+  width: 90%;
+
   margin: 100px auto 50px auto;
   padding: 30px;
-  background: rgba(255, 255, 255, 0.05);
+
+  background: rgba(255,255,255,0.05);
+
   border-radius: 16px;
+
   box-shadow: 0 0 20px rgba(255,220,180,0.1);
+
+  line-height: 1.8;
+  font-size: 18px;
+
+  overflow: hidden;
+}
+.container * {
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
+.container,
+.container p,
+.container h1,
+.container h2,
+.container h3,
+.container li,
+.container strong {
+  color: #f5f3ef;
+}
 h1 {
   text-align: center;
   margin-bottom: 20px;
+  font-size: 32px;
+  font-weight: 600;
+
 }
 
 p {
-  line-height: 1.6;
+  line-height: 1.8;
+  font-size: 18px;
+  margin-top: 20px;
   white-space: pre-wrap;
+
 }
 
 #likeBtn {
