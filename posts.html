@@ -9,60 +9,37 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Georgia', serif;
-
   background: radial-gradient(circle at top, #1b1b2f, #0b0b14);
-
   color: #f5f3ef;
 }
 
 .container {
   max-width: 900px;
   width: 90%;
-
   margin: 100px auto 50px auto;
   padding: 30px;
-
   background: rgba(255,255,255,0.05);
-
   border-radius: 16px;
-
   box-shadow: 0 0 20px rgba(255,220,180,0.1);
-
   line-height: 1.8;
   font-size: 18px;
-
   overflow: hidden;
 }
+
 .container * {
   max-width: 100%;
   box-sizing: border-box;
   overflow-wrap: break-word;
-  word-wrap: break-word;
 }
 
-.container,
-.container p,
-.container h1,
-.container h2,
-.container h3,
-.container li,
-.container strong {
-  color: #f5f3ef;
-}
 h1 {
   text-align: center;
   margin-bottom: 20px;
   font-size: 32px;
-  font-weight: 600;
-
 }
 
 p {
-  line-height: 1.8;
-  font-size: 18px;
-  margin-top: 20px;
   white-space: pre-wrap;
-
 }
 
 #likeBtn {
@@ -72,16 +49,8 @@ p {
   border-radius: 40px;
   cursor: pointer;
   font-weight: bold;
-  font-size: 16px;
   background: linear-gradient(135deg, #ff9eb5, #ffcaa6);
   color: #1b1b2f;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 20px rgba(255, 120, 170, 0.4);
-}
-
-#likeBtn:hover {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 0 35px rgba(255, 120, 170, 0.8);
 }
 
 #likeBtn.liked {
@@ -97,24 +66,10 @@ p {
   width: 100%;
   height: 80px;
   margin-top: 15px;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  resize: none;
-}
-
-.comments-section button {
-  margin-top: 10px;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background: #ffcaa6;
-  font-weight: bold;
 }
 
 .comment {
-  margin-top: 15px;
+  margin-top: 10px;
   padding: 10px;
   background: rgba(255,255,255,0.07);
   border-radius: 8px;
@@ -127,18 +82,8 @@ p {
   border-radius: 10px;
   background: #ffcaa6;
   color: #1b1b2f;
-  font-weight: bold;
   text-decoration: none;
-}
-#postText,
-#postText * {
-  color: #f5f3ef !important;
-  background: transparent !important;
-
-  overflow-wrap: break-word;
-  word-break: break-word;
-  max-width: 100%;
-  box-sizing: border-box;
+  font-weight: bold;
 }
 </style>
 </head>
@@ -166,27 +111,45 @@ p {
 
 <script>
 
-/* -------- GET POST ID -------- */
 const urlParams = new URLSearchParams(window.location.search);
-const postId = parseInt(urlParams.get('id'));
+const postSlug = urlParams.get('slug');
 
-/* -------- LOAD POSTS -------- */
-let posts = JSON.parse(localStorage.getItem("blogPosts")) || [];
-if (posts.length === 0) {
-  fetch('posts.json')
-    .then(res => res.json())
-    .then(json => {
-      posts = json;
+let posts = [];
+
+/* ---------- INIT ---------- */
+init();
+
+async function init() {
+  try {
+    // 1. Try localStorage first
+    const localData = localStorage.getItem("blogPosts");
+
+    if (localData) {
+      posts = JSON.parse(localData);
       loadPost();
-    })
-    .catch(showError);
-} else {
-  loadPost();
+      return;
+    }
+
+    // 2. Fallback to JSON file
+    const res = await fetch('./posts.json');
+    
+    if (!res.ok) {
+      throw new Error("posts.json not found or failed to load");
+    }
+
+    posts = await res.json();
+    loadPost();
+
+  } catch (err) {
+    console.error(err);
+    showError();
+  }
 }
 
-/* -------- LOAD SINGLE POST -------- */
+/* ---------- LOAD POST ---------- */
 function loadPost() {
- const post = posts.find(p => p.id == postId);
+
+  const post = posts.find(p => p.slug === postSlug);
 
   const titleElem = document.getElementById("postTitle");
   const textElem = document.getElementById("postText");
@@ -197,80 +160,85 @@ function loadPost() {
   }
 
   titleElem.textContent = post.title;
-textElem.innerHTML = post.content || post.text;
+  textElem.innerHTML = post.content || post.text;
 
   setupLikes();
   setupComments();
 }
 
-/* -------- ERROR -------- */
+/* ---------- ERROR ---------- */
 function showError() {
   document.getElementById("postTitle").textContent = "Post not found 🌿";
-  document.getElementById("postText").textContent = "This post does not exist or was removed.";
+  document.getElementById("postText").textContent =
+    "This post does not exist or failed to load. Check console for errors.";
 }
 
-/* -------- LIKES -------- */
+/* ---------- LIKES ---------- */
 function setupLikes() {
+
   const likeBtn = document.getElementById("likeBtn");
   const likeCountElem = document.getElementById("likeCount");
 
   let likesData = JSON.parse(localStorage.getItem("likes")) || {};
   let userLikes = JSON.parse(localStorage.getItem("userLikes")) || {};
 
-  likesData[postId] = likesData[postId] || 0;
+likesData[postSlug] = likesData[postSlug] || 0;
 
-  likeCountElem.textContent = likesData[postId];
+  likeCountElem.textContent = likesData[postSlug]
 
-  if (userLikes[postId]) {
+  if (userLikes[postSlug]) {
     likeBtn.classList.add("liked");
   }
 
   likeBtn.addEventListener("click", () => {
-    if (userLikes[postId]) return;
+    if (userLikes[postSlug]) return;
 
-    likesData[postId]++;
-    userLikes[postId] = true;
+   likesData[postSlug]++;
+  userLikes[postSlug] = true;
 
     localStorage.setItem("likes", JSON.stringify(likesData));
     localStorage.setItem("userLikes", JSON.stringify(userLikes));
 
-    likeCountElem.textContent = likesData[postId];
+    likeCountElem.textContent = likesData[postSlug];
     likeBtn.classList.add("liked");
   });
 }
 
-/* -------- COMMENTS -------- */
+/* ---------- COMMENTS ---------- */
 function setupComments() {
+
   const commentInput = document.getElementById("commentInput");
   const commentBtn = document.getElementById("commentBtn");
   const commentsList = document.getElementById("commentsList");
 
   let commentsData = JSON.parse(localStorage.getItem("comments")) || {};
-  commentsData[postId] = commentsData[postId] || [];
+commentsData[postSlug] = commentsData[postSlug] || [];
 
-  function renderComments() {
+  function render() {
     commentsList.innerHTML = "";
 
-    commentsData[postId].forEach(comment => {
+  commentsData[postSlug].forEach(c => {
       const div = document.createElement("div");
       div.classList.add("comment");
-      div.textContent = comment;
+      div.textContent = c;
       commentsList.appendChild(div);
     });
   }
 
-  renderComments();
+  render();
 
   commentBtn.addEventListener("click", () => {
-    const newComment = commentInput.value.trim();
 
-    if (newComment !== "") {
-      commentsData[postId].push(newComment);
-      localStorage.setItem("comments", JSON.stringify(commentsData));
+    const text = commentInput.value.trim();
 
-      commentInput.value = "";
-      renderComments();
-    }
+    if (!text) return;
+
+   commentsData[postSlug].push(text);
+
+    localStorage.setItem("comments", JSON.stringify(commentsData));
+
+    commentInput.value = "";
+    render();
   });
 }
 

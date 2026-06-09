@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>Permission to Be</title>
@@ -622,7 +621,7 @@ posts.forEach((post) => {
     `;
 
     card.addEventListener("click", () => {
-    window.location.href = `posts.html?id=${post.id}`;
+   window.location.href = `posts.html?slug=${post.slug}`;
     });
 
     cardsContainer.appendChild(card);
@@ -631,21 +630,27 @@ posts.forEach((post) => {
 
 /* -------- LOAD POSTS -------- */
 
-if(posts.length === 0){
-fetch("posts.json")
-  .then(res => res.json())
-  .then(data => {
-    posts = data;
+async function initPosts() {
+  const local = localStorage.getItem("blogPosts");
+
+  if (local) {
+    posts = JSON.parse(local);
     renderPosts();
-  })
-  .catch(err => {
+    return;
+  }
+
+  try {
+    const res = await fetch("./posts.json");
+    posts = await res.json();
+    renderPosts();
+  } catch (err) {
     console.error("Failed to load posts:", err);
-  });
-} else {
-
-  renderPosts();
-
+  }
 }
+
+initPosts();
+
+
 
 /* -------- CTRL + M -------- */
 
@@ -661,26 +666,6 @@ document.addEventListener("keydown", function(e){
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
