@@ -597,6 +597,7 @@ subscribeBtn.addEventListener("click", () => {
 /* -------- BLOG POSTS -------- */
 
 let posts = JSON.parse(localStorage.getItem("blogPosts")) || [];
+alert(JSON.stringify(posts));
 
 function stripHTML(html) {
   const div = document.createElement("div");
