@@ -475,10 +475,15 @@ const supabaseUrl = "https://viwhwsygirdmaeevcrwp.supabase.co";
 
 const supabaseKey = "sb_publishable_BKGXlLvYSfOZcufIuo9dDA_YY0avhaF";
 
-const supabase = window.supabase.createClient(
+const { createClient } = window.supabase;
+
+const supabase = createClient(
   supabaseUrl,
   supabaseKey
 );
+
+console.log("CLIENT:", supabase);
+console.log("FROM:", typeof supabase.from);
 
 async function testSupabase() {
   const { data, error } = await supabase
