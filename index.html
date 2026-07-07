@@ -468,36 +468,15 @@ box-sizing: border-box;
 
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 
-const supabaseUrl = "https://viwhwsygirdmaeevcrwp.supabase.co";
-
-const supabaseKey = "sb_publishable_BKGXlLvYSfOZcufIuo9dDA_YY0avhaF";
-
-const { createClient } = window.supabase;
-
-const supabase = createClient(
-  supabaseUrl,
-  supabaseKey
+  const client = supabase.createClient(
+  "https://viwhwsygirdmaeevcrwp.supabase.co",
+  "sb_publishable_BKGXlLvYSfOZcufIuo9dDA_YY0avhaF"
 );
 
-console.log("CLIENT:", supabase);
-console.log("FROM:", typeof supabase.from);
-
-async function testSupabase() {
-  const { data, error } = await supabase
-    .from("posts")
-    .select("*");
-
-  console.log("DATA:", data);
-  console.log("ERROR:", error);
-}
-
-testSupabase();
-const effects = document.getElementById("effects");
-
-
+console.log("Homepage connected!");
 /* -------- CANDLES -------- */
 window.addEventListener("load", () => {
   const cols = 6;
@@ -623,7 +602,24 @@ subscribeBtn.addEventListener("click", () => {
 
 /* -------- BLOG POSTS -------- */
 
-let posts = JSON.parse(localStorage.getItem("blogPosts")) || [];
+let posts = [];
+
+async function loadPosts() {
+
+  const { data, error } = await client
+    .from("posts")
+    .select("*")
+    .order("id", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  posts = data;
+  renderPosts();
+
+}
 
 
 function stripHTML(html) {
@@ -657,27 +653,7 @@ posts.forEach((post) => {
 }
 
 /* -------- LOAD POSTS -------- */
-
-async function initPosts() {
-  const local = localStorage.getItem("blogPosts");
-
-  if (local) {
-    posts = JSON.parse(local);
-    renderPosts();
-    return;
-  }
-
-  try {
-    const res = await fetch("./posts.json");
-    posts = await res.json();
-    renderPosts();
-  } catch (err) {
-    console.error("Failed to load posts:", err);
-  }
-}
-
-
-initPosts();
+loadPosts();
 
 /* -------- CTRL + M -------- */
 

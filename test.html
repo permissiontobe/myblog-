@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Supabase Test</title>
+</head>
+<body>
+
+<h2>Testing Supabase...</h2>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const client = supabase.createClient(
+  "https://viwhwsygirdmaeevcrwp.supabase.co",
+  "sb_publishable_BKGXlLvYSfOZcufIuo9dDA_YY0avhaF"
+);
+
+console.log("Global supabase =", supabase);
+console.log("Client =", client);
+console.log("from =", typeof client.from);
+
+async function testConnection() {
+  const { data, error } = await client
+    .from("posts")
+    .select("*");
+
+  console.log("DATA =", data);
+  console.log("ERROR =", error);
+}
+
+testConnection();
+</script>
+
+</body>
+</html>

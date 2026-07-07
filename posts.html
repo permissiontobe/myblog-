@@ -108,8 +108,12 @@ p {
 <a href="index.html" class="back-btn">← Back to Blog</a>
 
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  const client = supabase.createClient(
+  "https://viwhwsygirdmaeevcrwp.supabase.co",
+  "sb_publishable_BKGXlLvYSfOZcufIuo9dDA_YY0avhaF"
+);
 
 const urlParams = new URLSearchParams(window.location.search);
 const postSlug = urlParams.get('slug');
@@ -120,30 +124,29 @@ let posts = [];
 init();
 
 async function init() {
+
   try {
-    // 1. Try localStorage first
-    const localData = localStorage.getItem("blogPosts");
 
-    if (localData) {
-      posts = JSON.parse(localData);
-      loadPost();
-      return;
+    const { data, error } = await client
+      .from("posts")
+      .select("*");
+
+    if (error) {
+      throw error;
     }
 
-    // 2. Fallback to JSON file
-    const res = await fetch('./posts.json');
-    
-    if (!res.ok) {
-      throw new Error("posts.json not found or failed to load");
-    }
+    posts = data;
 
-    posts = await res.json();
     loadPost();
 
   } catch (err) {
+
     console.error(err);
+
     showError();
+
   }
+
 }
 
 /* ---------- LOAD POST ---------- */
